@@ -43,13 +43,19 @@ $(function() {
                 var diff = timestamp - data.timestamp;
 
                 // 30 min timeout
-                if (diff > 10) {
+                if (diff > 1800) {
                     localStorage.removeItem('fuusioUserId');
                     console.debug('Timeout!');
                     createUser();
                 }
-                console.debug('Still time left: ', 30 - diff/60);
+                var leftMins =  parseInt(30 - diff/60);
+                console.debug('Still time left: ', leftMins);
                 console.debug(data);
+
+                $('#registrationInfo').text(
+                    'Olet jonossa sijalla 1, täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
+                    'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
+                );
             },
             error: function(response) {
                 console.error('ERROR', response);
@@ -138,6 +144,9 @@ $(function() {
                     $('#success > .alert-success')
                         .append('</div>');
 
+
+                    $('#submitForm').hide();
+
                     //clear all fields
                     $('#registrationForm').trigger("reset");
                 },
@@ -149,6 +158,8 @@ $(function() {
                         .append("</button>");
                     $('#success > .alert-danger').append("<strong>Pahoittelut, palvelin ei vastaa, yritä myöhemmin uudestaan!</strong>");
                     $('#success > .alert-danger').append('</div>');
+
+
                     //clear all fields
                     $('#registrationForm').trigger("reset");
                 },
