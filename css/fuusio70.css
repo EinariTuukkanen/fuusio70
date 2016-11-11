@@ -418,3 +418,7 @@ body {
 .required-field::before {
   content: " * ";
 }
+.help-block ul {
+  list-style-type: none !important;
+  color: #a94442;
+}

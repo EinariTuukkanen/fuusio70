@@ -22,6 +22,15 @@ function createUser() {
 }
 
 
+function showHistoryOrderDetails() {
+    $('.history-order-details').removeClass('hidden');
+}
+
+function hideHistoryOrderDetails() {
+    $('.history-order-details').addClass('hidden');
+}
+
+
 $(function() {
     var userId = localStorage.getItem('fuusioUserId');
     if (!!userId) {
@@ -146,6 +155,7 @@ $(function() {
 
 
                     $('#submitForm').hide();
+                    localStorage.removeItem('fuusioUserId');
 
                     //clear all fields
                     $('#registrationForm').trigger("reset");

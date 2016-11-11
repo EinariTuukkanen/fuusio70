@@ -96,7 +96,7 @@
                     <div class="row control-group">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label>* Sähköposti</label>
-                            <input type="email" class="form-control" placeholder="* Sähköposti" id="email" name="email" required data-validation-required-message="Ole hyvä ja ilmoita sähköpostisi.">
+                            <input type="email" class="form-control" placeholder="* Sähköposti" id="email" name="email" required data-validation-required-message="Ole hyvä ja ilmoita sähköpostisi." data-validation-validemail-message="Sähköposti ei ole oikeassa muodossa.">
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
@@ -174,16 +174,16 @@
                         </div>
                         <div class="form-group col-xs-4 controls">
                             <label class="radio-inline">
-                              <input type="radio" name="historyOrder" value="true">Kyllä
+                              <input type="radio" name="historyOrder" value="true" onclick="showHistoryOrderDetails()">Kyllä
                             </label>
                         </div>
                         <div class="form-group col-xs-4 controls">
                             <label class="radio-inline">
-                              <input type="radio" name="historyOrder" value="false">Ei
+                              <input type="radio" name="historyOrder" value="false" onclick="hideHistoryOrderDetails()">Ei
                             </label>
                         </div>
                     </div>
-                    <div class="row control-group form-row">
+                    <div class="row control-group form-row history-order-details hidden">
                         <div class="form-group col-xs-4 controls">
                             <label>Toimitustapa historiateokselle</label>
                         </div>
@@ -196,7 +196,7 @@
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
-                    <div class="row control-group">
+                    <div class="row control-group history-order-details hidden">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label>Postitusosoitteesi (osoite, postitoimipaikka ja postinumero)</label>
                             <textarea rows="2" class="form-control" placeholder="Postitusosoitteesi (osoite, postitoimipaikka ja postinumero)" id="historyAddress" name="historyAddress"></textarea>
