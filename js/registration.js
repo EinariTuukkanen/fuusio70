@@ -21,6 +21,13 @@ function createUser() {
     });
 }
 
+function showHistoryOrderAddress(postType) {
+    if (postType == 'deliverPost') {
+        $('.history-order-address').removeClass('hidden');
+    } else {
+        $('.history-order-address').addClass('hidden');
+    }
+}
 
 function showHistoryOrderDetails() {
     $('.history-order-details').removeClass('hidden');
@@ -28,6 +35,7 @@ function showHistoryOrderDetails() {
 
 function hideHistoryOrderDetails() {
     $('.history-order-details').addClass('hidden');
+    $('.history-order-address').addClass('hidden');
 }
 
 
@@ -55,16 +63,45 @@ $(function() {
                 if (diff > 1800) {
                     localStorage.removeItem('fuusioUserId');
                     console.debug('Timeout!');
-                    createUser();
-                }
-                var leftMins =  parseInt(30 - diff/60);
-                console.debug('Still time left: ', leftMins);
-                console.debug(data);
+                    $.ajax({
+                        url: API_USERS_URL,
+                        type: "POST",
+                        contentType: 'application/json',
+                        cache: false,
+                        success: function(response) {
+                            var data = JSON.parse(response);
+                            localStorage.setItem('fuusioUserId', data.userId);
 
-                $('#registrationInfo').text(
-                    'Olet jonossa sijalla 1, täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
-                    'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
-                );
+                            var timestamp = Math.floor(Date.now() / 1000);
+                            var diff = timestamp - data.timestamp;
+
+                            var leftMins =  parseInt(30 - diff/60);
+                            console.debug('Still time left: ', leftMins);
+                            console.debug(data);
+                            var count = data.count || 'X';
+
+                            $('#registrationInfo').text(
+                                'Olet jonossa sijalla ' + count + ', täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
+                                'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
+                            );
+                        },
+                        error: function(response) {
+                            console.error('ERROR', response);
+                        },
+                    });
+                } else {
+
+                    var leftMins =  parseInt(30 - diff/60);
+                    console.debug('Still time left: ', leftMins);
+                    console.debug(data);
+                    var count = data.count || 'X';
+                    $('#registrationInfo').text(
+                        'Olet jonossa sijalla ' + count + ', täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
+                        'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
+                    );
+
+                }
+               
             },
             error: function(response) {
                 console.error('ERROR', response);
@@ -72,7 +109,32 @@ $(function() {
         });
 
     } else {
-       createUser();
+        $.ajax({
+            url: API_USERS_URL,
+            type: "POST",
+            contentType: 'application/json',
+            cache: false,
+            success: function(response) {
+                var data = JSON.parse(response);
+                localStorage.setItem('fuusioUserId', data.userId);
+
+                var timestamp = Math.floor(Date.now() / 1000);
+                var diff = timestamp - data.timestamp;
+
+                var leftMins =  parseInt(30 - diff/60);
+                console.debug('Still time left: ', leftMins);
+                console.debug(data);
+                var count = data.count || 'X';
+
+                $('#registrationInfo').text(
+                    'Olet jonossa sijalla ' + count + ', täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
+                    'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
+                );
+            },
+            error: function(response) {
+                console.error('ERROR', response);
+            },
+        });
     }
 });
 
@@ -159,6 +221,10 @@ $(function() {
 
                     //clear all fields
                     $('#registrationForm').trigger("reset");
+
+                    var redirect = location.href.split('/')
+                    redirect.pop();
+                    location.href = redirect.join('/') + '/index.html';
                 },
                 error: function(response) {
                     console.error('ERROR', response);

@@ -21,6 +21,8 @@ db = client.fuusio70
 @app.route('/users/<user_id>', methods=['GET'])
 def user_read(user_id):
     user = db.users.find_one({'_id': ObjectId(user_id)})
+    count = db.users.count()
+    user['count'] = count
     return json.dumps(user, default=json_util.default)
 
 
@@ -42,7 +44,8 @@ def users_update():
     user = data['formData']
     user_id = data['userId']
     db.users.update({'_id': ObjectId(user_id)}, {'$set': user})
-    return json.dumps({'userId': str(user_id)})
+    count = db.users.count()
+    return json.dumps({'userId': str(user_id), 'count': count})
 
 
 @app.route('/users', methods=['POST'])
@@ -66,4 +69,8 @@ def users_create():
     }
     users = db.users
     user_id = users.insert_one(dummyUser).inserted_id
-    return json.dumps({'userId': str(user_id), 'timestamp': timestamp})
+    return json.dumps(
+        {'userId': str(user_id), 'timestamp': timestamp}
+    )
+
+app.run(host='0.0.0.0')
