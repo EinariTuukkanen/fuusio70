@@ -8,6 +8,7 @@ from bson.objectid import ObjectId
 import json
 
 from time import time
+import threading
 
 from flask_cors import CORS, cross_origin
 
@@ -21,8 +22,6 @@ db = client.fuusio70
 @app.route('/users/<user_id>', methods=['GET'])
 def user_read(user_id):
     user = db.users.find_one({'_id': ObjectId(user_id)})
-    count = db.users.count()
-    user['count'] = count
     return json.dumps(user, default=json_util.default)
 
 
@@ -30,6 +29,12 @@ def user_read(user_id):
 def users_read():
     users = db.users
     return json.dumps(list(users.find()), default=json_util.default)
+
+
+@app.route('/usersCount', methods=['GET'])
+def users_count():
+    count = db.users.count()
+    return json.dumps(count)
 
 
 @app.route('/users', methods=['PUT'])
@@ -44,15 +49,15 @@ def users_update():
     user = data['formData']
     user_id = data['userId']
     db.users.update({'_id': ObjectId(user_id)}, {'$set': user})
-    count = db.users.count()
-    return json.dumps({'userId': str(user_id), 'count': count})
+    return json.dumps({'userId': str(user_id)})
 
 
 @app.route('/users', methods=['POST'])
 @cross_origin(origins='*')
 def users_create():
     timestamp = int(time())
-    dummyUser = {
+    users = db.users
+    dummy_user = {
         'additionalInfo': '',
         'allergies': '',
         'avec': '',
@@ -67,10 +72,16 @@ def users_create():
         'table': '',
         'timestamp': timestamp
     }
-    users = db.users
-    user_id = users.insert_one(dummyUser).inserted_id
-    return json.dumps(
-        {'userId': str(user_id), 'timestamp': timestamp}
-    )
+    user_id = users.insert_one(dummy_user).inserted_id
 
-app.run(host='0.0.0.0')
+    threading.Timer(60 * 31, session_timeout, (str(user_id),))
+
+    return json.dumps({'userId': str(user_id), 'timestamp': timestamp})
+
+
+def session_timeout(user_id):
+    user = db.users.find_one({'_id': ObjectId(user_id)})
+    if not user['name']:
+        db.users.delete_one({'_id': ObjectId(user_id)})
+
+app.run()

@@ -1,4 +1,5 @@
-
+var API_BASE_URL = 'http://localhost:5000'; // 138.68.91.244:5000
+var SESSION_TIMEOUT = 1800 // seconds
 
 
 // ============================
@@ -6,135 +7,90 @@
 // ============================
 
 function createUser() {
+  // Create placeholder user
+  console.debug('Creating new user..');
+  $.ajax({
+    url: API_BASE_URL + '/users',
+    type: "POST",
+    contentType: 'application/json',
+    success: function(response) {
+        var data = JSON.parse(response);
+        // Save session
+        localStorage.setItem('fuusioUserId', data.userId);
+        updateInfoText(data.timestamp)
+    },
+    error: function(response) {
+        console.error('Error', response);
+    },
+  });
+}
+
+function updateInfoText(userTime) {
      $.ajax({
-        url: API_USERS_URL,
-        type: "POST",
-        contentType: 'application/json',
-        cache: false,
-        success: function(response) {
-            var data = JSON.parse(response);
-            localStorage.setItem('fuusioUserId', data.userId);
+        url: API_BASE_URL + '/usersCount',
+        type: "GET",
+        success: function(userCount) {
+            var timestamp = Math.floor(Date.now() / 1000);
+            var diff = timestamp - userTime;
+
+            var leftMins =  parseInt(30 - diff/60);
+            console.debug('Still time left: ', leftMins);
+            console.debug(userTime, userCount);
+            var count = userCount || 'X';
+
+            $('#registrationInfo').text(
+                'Olet jonossa sijalla ' + count + ', täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
+                'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
+            );       
         },
         error: function(response) {
-            console.error('ERROR', response);
+            console.error('Error', response);
         },
     });
-}
-
-function showHistoryOrderAddress(postType) {
-    if (postType == 'deliverPost') {
-        $('.history-order-address').removeClass('hidden');
-    } else {
-        $('.history-order-address').addClass('hidden');
-    }
-}
-
-function showHistoryOrderDetails() {
-    $('.history-order-details').removeClass('hidden');
-}
-
-function hideHistoryOrderDetails() {
-    $('.history-order-details').addClass('hidden');
-    $('.history-order-address').addClass('hidden');
 }
 
 
 $(function() {
     var userId = localStorage.getItem('fuusioUserId');
+
     if (!!userId) {
+        // Existing session found
+        // Find existing user by id
         $.ajax({
-            url: API_USERS_URL + '/' + userId,
+            url: API_BASE_URL + '/users' + '/' + userId,
             type: "GET",
             contentType: 'application/json',
-            cache: false,
             success: function(response) {
-                
                 var data = JSON.parse(response);
                 if (!data) {
+                    // Userid was not found
                     localStorage.removeItem('fuusioUserId');
-                    console.debug('Invalid userid!');
-                    createUser()
+                    console.debug('Invalid userid!', userId);
+                    createUser();
                     return
                 }
                 var timestamp = Math.floor(Date.now() / 1000);
                 var diff = timestamp - data.timestamp;
 
                 // 30 min timeout
-                if (diff > 1800) {
+                if (diff > SESSION_TIMEOUT) {
                     localStorage.removeItem('fuusioUserId');
                     console.debug('Timeout!');
-                    $.ajax({
-                        url: API_USERS_URL,
-                        type: "POST",
-                        contentType: 'application/json',
-                        cache: false,
-                        success: function(response) {
-                            var data = JSON.parse(response);
-                            localStorage.setItem('fuusioUserId', data.userId);
-
-                            var timestamp = Math.floor(Date.now() / 1000);
-                            var diff = timestamp - data.timestamp;
-
-                            var leftMins =  parseInt(30 - diff/60);
-                            console.debug('Still time left: ', leftMins);
-                            console.debug(data);
-                            var count = data.count || 'X';
-
-                            $('#registrationInfo').text(
-                                'Olet jonossa sijalla ' + count + ', täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
-                                'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
-                            );
-                        },
-                        error: function(response) {
-                            console.error('ERROR', response);
-                        },
-                    });
+                    createUser();
                 } else {
-
-                    var leftMins =  parseInt(30 - diff/60);
-                    console.debug('Still time left: ', leftMins);
-                    console.debug(data);
-                    var count = data.count || 'X';
-                    $('#registrationInfo').text(
-                        'Olet jonossa sijalla ' + count + ', täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
-                        'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
-                    );
-
+                    updateInfoText(data.timestamp);
                 }
                
             },
             error: function(response) {
-                console.error('ERROR', response);
+                console.error('Error', response);
             },
         });
 
     } else {
-        $.ajax({
-            url: API_USERS_URL,
-            type: "POST",
-            contentType: 'application/json',
-            cache: false,
-            success: function(response) {
-                var data = JSON.parse(response);
-                localStorage.setItem('fuusioUserId', data.userId);
-
-                var timestamp = Math.floor(Date.now() / 1000);
-                var diff = timestamp - data.timestamp;
-
-                var leftMins =  parseInt(30 - diff/60);
-                console.debug('Still time left: ', leftMins);
-                console.debug(data);
-                var count = data.count || 'X';
-
-                $('#registrationInfo').text(
-                    'Olet jonossa sijalla ' + count + ', täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. ' +
-                    'Sinulla on ' +  leftMins + ' minuuttia aikaa ennen lomakkeen vanhentumista.'
-                );
-            },
-            error: function(response) {
-                console.error('ERROR', response);
-            },
-        });
+        // New session!
+        // Create placeholder user
+        createUser();
     }
 });
 
@@ -176,6 +132,7 @@ $(function() {
     $("#registrationForm input,#registrationForm textarea").jqBootstrapValidation({
         preventSubmit: true,
         submitError: function($form, event, errors) {
+            alert('Ole hyvä ja täytä tähdellä (*) merkityt pakolliset kohdat');
             // additional error messages or events
         },
         submitSuccess: function($form, event) {
@@ -198,12 +155,11 @@ $(function() {
             var data = {formData: formData, userId: userId};
 
             $.ajax({
-                url: API_USERS_URL,
+                url: API_BASE_URL + '/users',
                 type: "PUT",
                 dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
-                cache: false,
                 success: function(response) {
                     console.debug(response);
                     // Success message
@@ -254,6 +210,26 @@ $(function() {
 
 
 /*When clicking on Full hide fail/success boxes */
-$('#name').focus(function() {
-    $('#success').html('');
-});
+// $('#name').focus(function() {
+//     $('#success').html('');
+// });
+
+
+// Form actions
+
+function showHistoryOrderAddress(postType) {
+    if (postType == 'deliverPost') {
+        $('.history-order-address').removeClass('hidden');
+    } else {
+        $('.history-order-address').addClass('hidden');
+    }
+}
+
+function showHistoryOrderDetails() {
+    $('.history-order-details').removeClass('hidden');
+}
+
+function hideHistoryOrderDetails() {
+    $('.history-order-details').addClass('hidden');
+    $('.history-order-address').addClass('hidden');
+}
