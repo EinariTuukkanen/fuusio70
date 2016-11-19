@@ -227,9 +227,9 @@ $(function() {
 
 function showHistoryOrderDetails() {
     $('.history-order-details').removeClass('hidden');
-    if ($('#historyDeliveryMethod').val() == 'deliverPost') {
-        $('.history-order-address').removeClass('hidden');
-    }
+    // if ($('#historyDeliveryMethod').val() == 'deliverPost') {
+    $('.history-order-address').removeClass('hidden');
+    // }
 }
 
 function hideHistoryOrderDetails() {
@@ -237,10 +237,10 @@ function hideHistoryOrderDetails() {
     $('.history-order-address').addClass('hidden');
 }
 
-$("#historyDeliveryMethod").change(function() {
-    if ($('#historyDeliveryMethod').val() == 'deliverPost') {
-        $('.history-order-address').removeClass('hidden');
-    } else {
-        $('.history-order-address').addClass('hidden');
-    }
-});
+// $("#historyDeliveryMethod").change(function() {
+//     if ($('#historyDeliveryMethod').val() == 'deliverPost') {
+//         $('.history-order-address').removeClass('hidden');
+//     } else {
+//         $('.history-order-address').addClass('hidden');
+//     }
+// });
