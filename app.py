@@ -134,4 +134,4 @@ def session_timeout(mongo_db, user_id):
 # ======================================
 
 
-app.run()
+app.run(host='0.0.0.0')
