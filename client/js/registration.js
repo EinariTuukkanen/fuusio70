@@ -217,13 +217,13 @@ $(function() {
 
 // Form actions
 
-function showHistoryOrderAddress(postType) {
-    if (postType == 'deliverPost') {
-        $('.history-order-address').removeClass('hidden');
-    } else {
-        $('.history-order-address').addClass('hidden');
-    }
-}
+// function showHistoryOrderAddress(postType) {
+//     if (postType == 'deliverPost') {
+//         $('.history-order-address').removeClass('hidden');
+//     } else {
+//         $('.history-order-address').addClass('hidden');
+//     }
+// }
 
 function showHistoryOrderDetails() {
     $('.history-order-details').removeClass('hidden');
@@ -236,3 +236,11 @@ function hideHistoryOrderDetails() {
     $('.history-order-details').addClass('hidden');
     $('.history-order-address').addClass('hidden');
 }
+
+$("#historyDeliveryMethod").change(function() {
+    if ($('#historyDeliveryMethod').val() == 'deliverPost') {
+        $('.history-order-address').removeClass('hidden');
+    } else {
+        $('.history-order-address').addClass('hidden');
+    }
+});
