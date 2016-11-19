@@ -4,7 +4,8 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 body {
-  font-family: 'Lora', 'Times New Roman', serif;
+  /*font-family: 'Lora', 'Times New Roman', serif;*/
+  font-family: 'Raleway', sans-serif;
   font-size: 20px;
   color: #333333;
 }
@@ -91,6 +92,9 @@ hr.small {
   }
 }
 @media only screen and (min-width: 1170px) {
+  .intro-header {
+    min-height: 500px;
+  }
   .navbar-custom {
     -webkit-transition: background-color 0.3s;
     -moz-transition: background-color 0.3s;
@@ -199,7 +203,8 @@ hr.small {
   font-weight: 600;
 }
 .intro-header .post-heading .meta {
-  font-family: 'Lora', 'Times New Roman', serif;
+  /*font-family: 'Lora', 'Times New Roman', serif;*/
+  font-family: 'Raleway', sans-serif;
   font-style: italic;
   font-weight: 300;
   font-size: 20px;
@@ -418,7 +423,8 @@ body {
   padding-top: 25px;
 }
 .form-row label {
-  font-family: 'Lora', 'Times New Roman', serif;
+  /*font-family: 'Lora', 'Times New Roman', serif;*/
+  font-family: 'Raleway', sans-serif;
   font-size: 20px;
   color: #555;
   font-weight: normal;
@@ -436,4 +442,5 @@ body {
 .help-block ul {
   list-style-type: none !important;
   color: #a94442;
+  font-size: 14px;
 }

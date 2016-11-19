@@ -11,6 +11,8 @@
 
     <title>Fuusio 70</title>
 
+    <link rel="icon" href="img/favicon1924.png" sizes="192x192" />
+
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -19,8 +21,11 @@
 
     <!-- Custom Fonts -->
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <!-- <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'> -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -59,7 +64,7 @@
  -->
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('img/contact-bg.jpg')">
+    <header class="intro-header" style="background-image: url('img/fuusio70header.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -98,31 +103,32 @@
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
-                    <div class="row control-group form-row">
-                        <div class="form-group col-xs-4 controls">
+                    <div class="row control-group form-row form-group controls">
+                        <div class="form-group col-xs-4">
                             <label>* Olen...</label>
-                        </div>
-                        <div class="form-group col-xs-8 controls">
-                            <select name="status" class="form-control form-select">
-                                <option value="student">Opiskelija</option>
-                                <option value="notStudent">Ei-opiskelija</option>
-                                <option value="inviteGuest">Kutsuvieras</option>
-                                <option value="supporter">Kannattaja</option>
-                                <option value="apple">Omena</option>
-                            </select>
                             <p class="help-block text-danger"></p>
                         </div>
-                    </div>
-                    <div class="row control-group form-row">
-                        <div class="form-group col-xs-4 controls">
-                            <label>* Ilmoittaudun myös sillikselle</label>
+                        <div class="col-xs-8 controls">
+                            <select name="status" class="form-control form-select" required data-validation-required-message="Valitse yksi">
+                                <option value="">-- Valitse --</option>
+                                <option value="student">Opiskelija (85€)</option>
+                                <option value="notStudent">Ei-opiskelija (110€)</option>
+                                <option value="supporter">Kannattaja (200€)</option>
+                                <option value="inviteGuest">Kutsuvieras</option>
+                            </select>
                         </div>
-                        <div class="form-group col-xs-4 controls">
+                    </div>
+                    <div class="row control-group form-row form-group controls">
+                        <div class="col-xs-4">
+                            <label>* Ilmoittaudun myös sillikselle</label>
+                            <p class="help-block text-danger"></p>
+                        </div>
+                        <div class="col-xs-4">
                             <label class="radio-inline">
-                              <input type="radio" name="sillis" value="true">Kyllä
+                              <input type="radio" name="sillis" minchecked="1" data-validation-minchecked-message="Valitse toinen" value="true">Kyllä
                             </label>
                         </div>
-                        <div class="form-group col-xs-4 controls">
+                        <div class="col-xs-4">
                             <label class="radio-inline">
                               <input type="radio" name="sillis" value="false">Ei
                             </label>
@@ -163,30 +169,33 @@
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
-                    <div class="row control-group form-row">
-                        <div class="form-group col-xs-12 controls">
+                    <div class="row control-group form-row form-group controls">
+                        <div class="col-xs-12">
                             <p>Fyysikkokillan Historiateos ilmestyy keväällä 2017. Historiateos on ammattivoimin kirjoitettu noin 300 sivuinen, kovakantinen teos. Ennakkotilatut teokset varustetaan kirjoittaja Juho Kotakallion nimikirjoituksella.</p>
                         </div>
-                        <div class="form-group col-xs-4 controls">
+                        <div class="col-xs-4">
                             <label>* Tilaan historiateoksen hintaan 35€</label>
+                            <p class="help-block text-danger"></p>
                         </div>
-                        <div class="form-group col-xs-4 controls">
+                        <div class="col-xs-4">
                             <label class="radio-inline">
-                              <input type="radio" name="historyOrder" value="true" onclick="showHistoryOrderDetails()">Kyllä
+                              <input type="radio" name="historyOrder" value="true" minchecked="1" data-validation-minchecked-message="Valitse toinen" onclick="showHistoryOrderDetails()">Kyllä
                             </label>
                         </div>
-                        <div class="form-group col-xs-4 controls">
+                        <div class="col-xs-4">
                             <label class="radio-inline">
                               <input type="radio" name="historyOrder" value="false" onclick="hideHistoryOrderDetails()">Ei
                             </label>
                         </div>
                     </div>
-                    <div class="row control-group form-row history-order-details hidden">
-                        <div class="form-group col-xs-4 controls">
+                    <div class="row control-group form-row history-order-details controls hidden">
+                        <div class="form-group col-xs-4">
                             <label>Toimitustapa historiateokselle</label>
+                            <p class="help-block text-danger"></p>
                         </div>
-                        <div class="form-group col-xs-8 controls">
+                        <div class="col-xs-8 controls">
                             <select name="historyDeliveryMethod" class="form-control form-select" onclick="showHistoryOrderAddress(this.value)">
+                                <option value="">-- Valitse --</option>
                                 <option value="pickup">Nouto kiltahuoneelta</option>
                                 <option value="deliverFuusio">Toimitus Fuusioon</option>
                                 <option value="deliverPost">Toimitus postitse</option>
@@ -226,26 +235,10 @@
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <ul class="list-inline text-center">
                         <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
+                            <a href="https://www.facebook.com/events/1178180328936888/" target="_blank">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
                                 </span>
                             </a>
                         </li>
@@ -266,7 +259,7 @@
     <script src="js/jqBootstrapValidation.js"></script>
 
     <!-- Custom JavaScript -->
-    <script src="js/common.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/registration.js"></script>
 
 </body>

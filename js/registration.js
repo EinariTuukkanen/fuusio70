@@ -1,7 +1,3 @@
-var API_BASE_URL = 'http://138.68.91.244:5000'; // 138.68.91.244:5000
-var SESSION_TIMEOUT = 1800 // seconds
-
-
 // ============================
 // >> REGISTRATION FORM
 // ============================
@@ -129,7 +125,7 @@ $.fn.serializeObject = function()
 // Form validator
 $(function() {
 
-    $("#registrationForm input,#registrationForm textarea").jqBootstrapValidation({
+    $("#registrationForm input,#registrationForm select,#registrationForm checkbox,#registrationForm textarea").jqBootstrapValidation({
         preventSubmit: true,
         submitError: function($form, event, errors) {
             alert('Ole hyvä ja täytä tähdellä (*) merkityt pakolliset kohdat');
