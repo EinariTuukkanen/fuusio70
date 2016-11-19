@@ -112,8 +112,9 @@ def users_create():
 
     # Timeout, delete if not edited within timeout limit
     timeout_duration = int(settings['App']['SessionTimeout'])
-    print('Timeout started', timeout_duration)
-    threading.Timer(timeout_duration, session_timeout, (db, str(user_id))).start()
+    threading.Timer(
+        timeout_duration, session_timeout, (db, str(user_id))
+    ).start()
 
     return json.dumps({'userId': str(user_id), 'timestamp': timestamp})
 
@@ -125,7 +126,6 @@ def users_create():
 def session_timeout(mongo_db, user_id):
     user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
     if not user.get('name'):
-        print('DELETING ', user_id)
         mongo_db.users.delete_one({'_id': ObjectId(user_id)})
 
 
