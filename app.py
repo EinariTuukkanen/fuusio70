@@ -9,8 +9,8 @@
 import json
 import threading
 
-from bson import json_util
-from bson.objectid import ObjectId
+# import json_util
+from bson import ObjectId
 from time import time
 
 # Third-party
@@ -28,13 +28,8 @@ import utils
 # >>> INITIALIZE
 # ======================================
 
-client = MongoClient('localhost', 27017)
-db = client.fuusio70
-
 app = Flask(__name__)
 CORS(app)
-settings = utils.load_config(app, db, 'config.ini')
-mail = Mail(app)
 
 
 # ======================================
@@ -46,36 +41,42 @@ mail = Mail(app)
 @cross_origin(origins='*')
 def users_read():
     """ Returns all user objects """
+    db = get_database()
     users = db.users
-    return json.dumps(list(users.find()), default=json_util.default)
+    return JSONEncoder().encode(list(users.find()))
+    # , default=json_util.default
 
 
 @app.route('/users/<user_id>', methods=['GET'])
 @cross_origin(origins='*')
 def user_read(user_id):
     """ Returns single user object by id """
+    db = get_database()
     user = db.users.find_one({'_id': ObjectId(user_id)})
     user = user or {}
-    return json.dumps(user, default=json_util.default)
+    return JSONEncoder().encode(user)
 
 
 @app.route('/usersCount', methods=['GET'])
 @cross_origin(origins='*')
 def users_count():
     """ Returns the count of user objects """
+    db = get_database()
     count = db.users.count()
-    return json.dumps(count)
+    return JSONEncoder().encode(count)
 
 
 @app.route('/users', methods=['PUT'])
 @cross_origin(origins='*')
 def users_update():
     """ Update user object """
+    db = get_database()
     raw_data = request.data
+    print(str(raw_data.decode("utf-8")))
     try:
         if not raw_data:
             raise ValueError('request.data was empty')
-        data = json.loads(raw_data)
+        data = json.loads(str(raw_data.decode("utf-8")))
     except ValueError as e:
         print('[ERROR] /users PUT ValueError: ' + str(e))
         return str(e)
@@ -95,6 +96,7 @@ def users_update():
 @cross_origin(origins='*')
 def users_create():
     """ Creates new empty user object """
+    db = get_database()
     timestamp = int(time())
     users = db.users
     dummy_user = {
@@ -125,8 +127,15 @@ def users_create():
 
 
 # ======================================
-# >>> HELPER FUNCTIONS
+# >>> HELPERS
 # ======================================
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
 
 def session_timeout(mongo_db, user_id):
     user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
@@ -134,9 +143,16 @@ def session_timeout(mongo_db, user_id):
         mongo_db.users.delete_one({'_id': ObjectId(user_id)})
 
 
+def get_database():
+    client = MongoClient('localhost', 27017)
+    return client.fuusio70
+
 # ======================================
 # >>> RUN
 # ======================================
 
+settings = utils.load_config(app, get_database(), 'config.ini')
+mail = Mail(app)
 
-app.run(host='0.0.0.0')
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')

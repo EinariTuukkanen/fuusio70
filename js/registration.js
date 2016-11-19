@@ -58,7 +58,7 @@ $(function() {
             contentType: 'application/json',
             success: function(response) {
                 var data = JSON.parse(response);
-                if (!data) {
+                if ($.isEmptyObject(data)) {
                     // Userid was not found
                     localStorage.removeItem('fuusioUserId');
                     console.debug('Invalid userid!', userId);
@@ -80,10 +80,10 @@ $(function() {
             },
             error: function(response) {
                 console.error('Error, user not found', response);
-                localStorage.removeItem('fuusioUserId');
-                console.debug('Invalid userid!', userId);
-                createUser();
-                return
+                //localStorage.removeItem('fuusioUserId');
+                //console.debug('Invalid userid!', userId);
+                //createUser();
+                //return
             },
         });
 

@@ -4,7 +4,7 @@
 
 # Python
 import time
-import ConfigParser
+import configparser
 
 # Third-party
 from string import Template
@@ -17,7 +17,7 @@ from flask_mail import Message
 # ======================================
 
 def load_config(flask_app, mongo_db, config_filename):
-    config = ConfigParser.SafeConfigParser()
+    config = configparser.SafeConfigParser()
     config.optionxform = str
     config.read(config_filename)
     settings = dict()

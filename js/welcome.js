@@ -21,7 +21,6 @@ $(function() {
     $.ajax({
         url: API_BASE_URL + '/users',
         type: "GET",
-        cache: false,
         success: function(response) {
             var usersData = JSON.parse(response);
             for (var i = 0; i < usersData.length; i++) {
