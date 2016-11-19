@@ -12,7 +12,9 @@ function insertUserToTable(index, table, user) {
 
     cellIndex.innerHTML = index;
     cellName.innerHTML = user.name;
+    cellName.className = 'table-mobile-friendly';
     cellTable.innerHTML = user.table;
+    cellTable.className = 'table-mobile-friendly';
 }
 
 // On page load get users and insert them to table
