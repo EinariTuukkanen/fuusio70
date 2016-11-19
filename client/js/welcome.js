@@ -23,6 +23,11 @@ $(function() {
         type: "GET",
         success: function(response) {
             var usersData = JSON.parse(response);
+            var usersData = usersData.sort(
+                function(a, b) {
+                    return a.timestamp > b.timestamp
+                }
+            );
             for (var i = 0; i < usersData.length; i++) {
                 insertUserToTable(i + 1, table, usersData[i]);
             }
