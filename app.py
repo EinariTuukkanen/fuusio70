@@ -41,21 +41,26 @@ mail = Mail(app)
 # >>> REST API ENDPOINTS
 # ======================================
 
-@app.route('/users/<user_id>', methods=['GET'])
-def user_read(user_id):
-    """ Returns single user object by id """
-    user = db.users.find_one({'_id': ObjectId(user_id)})
-    return json.dumps(user, default=json_util.default)
-
 
 @app.route('/users', methods=['GET'])
+@cross_origin(origins='*')
 def users_read():
     """ Returns all user objects """
     users = db.users
     return json.dumps(list(users.find()), default=json_util.default)
 
 
+@app.route('/users/<user_id>', methods=['GET'])
+@cross_origin(origins='*')
+def user_read(user_id):
+    """ Returns single user object by id """
+    user = db.users.find_one({'_id': ObjectId(user_id)})
+    user = user or {}
+    return json.dumps(user, default=json_util.default)
+
+
 @app.route('/usersCount', methods=['GET'])
+@cross_origin(origins='*')
 def users_count():
     """ Returns the count of user objects """
     count = db.users.count()

@@ -53,7 +53,7 @@ $(function() {
         // Existing session found
         // Find existing user by id
         $.ajax({
-            url: API_BASE_URL + '/users' + '/' + userId,
+            url: API_BASE_URL + '/users/' + userId,
             type: "GET",
             contentType: 'application/json',
             success: function(response) {
@@ -79,7 +79,11 @@ $(function() {
                
             },
             error: function(response) {
-                console.error('Error', response);
+                console.error('Error, user not found', response);
+                localStorage.removeItem('fuusioUserId');
+                console.debug('Invalid userid!', userId);
+                createUser();
+                return
             },
         });
 
