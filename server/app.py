@@ -61,9 +61,11 @@ def user_read(user_id):
     """ Returns single user object by id """
     db = get_database()
     user = db.users.find_one({'_id': ObjectId(user_id)})
-    sanitized_user = {
-        'timestamp': user.get('timestamp')
-    }
+    sanitized_user = {}
+    if user:
+        sanitized_user = {
+            'timestamp': user.get('timestamp')
+        }
     return JSONEncoder().encode(sanitized_user)
 
 
