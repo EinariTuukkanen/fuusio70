@@ -118,6 +118,7 @@ def users_create():
     user_id = users.insert_one(dummy_user).inserted_id
 
     # Timeout, delete if not edited within timeout limit
+    settings = db.config.find_one()
     timeout_duration = int(settings['App']['SessionTimeout'])
     threading.Timer(
         timeout_duration, session_timeout, (db, str(user_id))
