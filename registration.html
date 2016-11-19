@@ -34,9 +34,8 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <!-- <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
@@ -45,7 +44,6 @@
                 <a class="navbar-brand" href="index.html">FUUSIO 70</a>
             </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
@@ -56,11 +54,9 @@
                     </li>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.container -->
     </nav>
-
+ -->
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
     <header class="intro-header" style="background-image: url('img/contact-bg.jpg')">
@@ -68,9 +64,9 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="page-heading">
-                        <h1>Ilmoittaudu</h1>
+                      <!--   <h1>Ilmoittaudu</h1>
                         <hr class="small">
-                        <span id="registrationInfo" class="subheading"></span>
+                        <span id="registrationInfo" class="subheading"></span> -->
                     </div>
                 </div>
             </div>
@@ -81,6 +77,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <span id="registrationInfo" class="subheading">Olet jonossa sijalla ..., täytä ilmoittautumislomake alla vahvistaaksesi ilmoittautumisen. Sinulla on ... minuuttia aikaa ennen lomakkeen vanhentumista.</span>
+
                 <p>Pakolliset kysymykset on merkitty tähdellä (*).</p>
                 <!-- Registration Form - Enter your email address on line 19 of the mail/contact_me.php file to make this form work. -->
                 <!-- WARNING: Some web hosts do not allow emails to be sent through forms to common mail hosts like Gmail or Yahoo. It's recommended that you use a private domain email address! -->
@@ -188,7 +186,7 @@
                             <label>Toimitustapa historiateokselle</label>
                         </div>
                         <div class="form-group col-xs-8 controls">
-                            <select name="historyDeliveryMethod" class="form-control form-select">
+                            <select name="historyDeliveryMethod" class="form-control form-select" onclick="showHistoryOrderAddress(this.value)">
                                 <option value="pickup">Nouto kiltahuoneelta</option>
                                 <option value="deliverFuusio">Toimitus Fuusioon</option>
                                 <option value="deliverPost">Toimitus postitse</option>
@@ -196,7 +194,7 @@
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
-                    <div class="row control-group history-order-details hidden">
+                    <div class="row control-group history-order-address hidden">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label>Postitusosoitteesi (osoite, postitoimipaikka ja postinumero)</label>
                             <textarea rows="2" class="form-control" placeholder="Postitusosoitteesi (osoite, postitoimipaikka ja postinumero)" id="historyAddress" name="historyAddress"></textarea>
@@ -207,8 +205,11 @@
                     <br>
                     <div id="success"></div>
                     <div class="row">
-                        <div class="form-group col-xs-12">
-                            <button id="submitForm" type="submit" class="btn btn-default">Lähetä</button>
+                        <div class="form-group col-xs-6">
+                            <button id="submitForm" type="submit" class="btn btn-submit btn-lg">Lähetä</button>
+                        </div>
+                        <div class="form-group col-xs-6 text-right">
+                            <button type="button" onclick="window.history.back()" class="btn btn-default btn-lg text-center">Takaisin</button>
                         </div>
                     </div>
                 </form>

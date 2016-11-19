@@ -8,6 +8,7 @@ from bson.objectid import ObjectId
 import json
 
 from time import time
+import threading
 
 from flask_cors import CORS, cross_origin
 
@@ -30,6 +31,12 @@ def users_read():
     return json.dumps(list(users.find()), default=json_util.default)
 
 
+@app.route('/usersCount', methods=['GET'])
+def users_count():
+    count = db.users.count()
+    return json.dumps(count)
+
+
 @app.route('/users', methods=['PUT'])
 @cross_origin(origins='*')
 def users_update():
@@ -49,7 +56,8 @@ def users_update():
 @cross_origin(origins='*')
 def users_create():
     timestamp = int(time())
-    dummyUser = {
+    users = db.users
+    dummy_user = {
         'additionalInfo': '',
         'allergies': '',
         'avec': '',
@@ -64,6 +72,16 @@ def users_create():
         'table': '',
         'timestamp': timestamp
     }
-    users = db.users
-    user_id = users.insert_one(dummyUser).inserted_id
+    user_id = users.insert_one(dummy_user).inserted_id
+
+    threading.Timer(60 * 31, session_timeout, (str(user_id),))
+
     return json.dumps({'userId': str(user_id), 'timestamp': timestamp})
+
+
+def session_timeout(user_id):
+    user = db.users.find_one({'_id': ObjectId(user_id)})
+    if not user['name']:
+        db.users.delete_one({'_id': ObjectId(user_id)})
+
+app.run()

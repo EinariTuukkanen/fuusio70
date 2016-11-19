@@ -1,3 +1,4 @@
+var API_BASE_URL = 'http://138.68.91.244:5000'; // 138.68.91.244:5000
 
 // ============================
 // >> WELCOME PAGE
@@ -20,7 +21,7 @@ function insertUserToTable(index, table, user) {
 $(function() {
     var table = document.getElementById('registeredUsers');
     $.ajax({
-        url: API_USERS_URL,
+        url: API_BASE_URL + '/users',
         type: "GET",
         cache: false,
         success: function(response) {

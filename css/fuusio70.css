@@ -343,6 +343,21 @@ form .row:first-child .floating-label-form-group {
   font-size: 16px;
   padding: 25px 35px;
 }
+.btn-submit {
+  background-color: #0085A1;
+  border: 1px solid #0085A1;
+  color: white;
+}
+.btn-submit:hover {
+  background-color: #01728A !important;
+  border: 1px solid #01728A;
+  color: white;
+}
+.btn-submit:focus {
+  background-color: #00657A !important;
+  border: 1px solid #00657A !important;
+  color: white !important;
+}
 .btn-default:hover,
 .btn-default:focus {
   background-color: #0085A1;

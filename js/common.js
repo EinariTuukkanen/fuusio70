@@ -3,7 +3,8 @@
 // >> CONFIG
 // ============================
 
-var API_USERS_URL = 'http://localhost:5000/users';
+var API_BASE_URL = 'http://localhost:5000/'; // 138.68.91.244:5000
+var SESSION_TIMEOUT = 1800 // seconds
 
 
 // ============================
@@ -11,7 +12,7 @@ var API_USERS_URL = 'http://localhost:5000/users';
 // ============================
 
 // Navigation Scripts to Show Header on Scroll-Up
-jQuery(document).ready(function($) {
+/*jQuery(document).ready(function($) {
     var MQL = 1170;
 
     //primary navigation slide-in effect
@@ -38,4 +39,4 @@ jQuery(document).ready(function($) {
                 this.previousTop = currentTop;
             });
     }
-});
+});*/
