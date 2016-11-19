@@ -444,3 +444,6 @@ body {
   color: #a94442;
   font-size: 14px;
 }
+.table-mobile-friendly {
+  word-break: break-all;
+}
