@@ -16,13 +16,14 @@ from time import time
 # Third-party
 from flask import Flask
 from flask import request
+from flask import Blueprint
 from flask_mail import Mail
 from flask_cors import CORS, cross_origin
 
 from pymongo import MongoClient
 
 # Project
-import utils
+from server import utils
 
 # ======================================
 # >>> INITIALIZE
@@ -31,13 +32,14 @@ import utils
 app = Flask(__name__)
 CORS(app)
 
+routes = Blueprint('ilmo', __name__, url_prefix='/api')
 
 # ======================================
 # >>> REST API ENDPOINTS
 # ======================================
 
 
-@app.route('/users', methods=['GET'])
+@routes.route('/users', methods=['GET'])
 @cross_origin(origins='*')
 def users_read():
     """ Returns all user objects """
@@ -47,7 +49,7 @@ def users_read():
     # , default=json_util.default
 
 
-@app.route('/users/<user_id>', methods=['GET'])
+@routes.route('/users/<user_id>', methods=['GET'])
 @cross_origin(origins='*')
 def user_read(user_id):
     """ Returns single user object by id """
@@ -57,7 +59,7 @@ def user_read(user_id):
     return JSONEncoder().encode(user)
 
 
-@app.route('/usersCount', methods=['GET'])
+@routes.route('/usersCount', methods=['GET'])
 @cross_origin(origins='*')
 def users_count():
     """ Returns the count of user objects """
@@ -66,7 +68,7 @@ def users_count():
     return JSONEncoder().encode(count)
 
 
-@app.route('/users', methods=['PUT'])
+@routes.route('/users', methods=['PUT'])
 @cross_origin(origins='*')
 def users_update():
     """ Update user object """
@@ -92,7 +94,7 @@ def users_update():
     return json.dumps({'userId': str(user_id)})
 
 
-@app.route('/users', methods=['POST'])
+@routes.route('/users', methods=['POST'])
 @cross_origin(origins='*')
 def users_create():
     """ Creates new empty user object """
@@ -152,8 +154,11 @@ def get_database():
 # >>> RUN
 # ======================================
 
-settings = utils.load_config(app, get_database(), 'config.ini')
+settings = utils.load_config(app, get_database(), '/home/fuusio70-ilmo/server/config.ini')
 mail = Mail(app)
+
+app.register_blueprint(routes)
+application = app
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
