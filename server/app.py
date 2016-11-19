@@ -44,9 +44,15 @@ routes = Blueprint('ilmo', __name__, url_prefix='/api')
 def users_read():
     """ Returns all user objects """
     db = get_database()
-    users = db.users
-    return JSONEncoder().encode(list(users.find()))
-    # , default=json_util.default
+    users = db.users.find()
+    sanitized_users = [
+        {
+            'name': u.get('name', ''),
+            'table': u.get('table', ''),
+            'timestamp': u.get('timestamp')
+        } for u in users
+    ]
+    return JSONEncoder().encode(sanitized_users)
 
 
 @routes.route('/users/<user_id>', methods=['GET'])
@@ -55,8 +61,10 @@ def user_read(user_id):
     """ Returns single user object by id """
     db = get_database()
     user = db.users.find_one({'_id': ObjectId(user_id)})
-    user = user or {}
-    return JSONEncoder().encode(user)
+    sanitized_user = {
+        'timestamp': user.get('timestamp')
+    }
+    return JSONEncoder().encode(sanitized_user)
 
 
 @routes.route('/usersCount', methods=['GET'])
@@ -83,9 +91,19 @@ def users_update():
         print('[ERROR] /users PUT ValueError: ' + str(e))
         return str(e)
 
-    user = data['formData']
+    user = data.get('formData')
+    user_id = data.get('userId')
+
+    old_user = db.users.find_one({'_id': ObjectId(user_id)})
+    if old_user.get('name') or user.get('name', '') == '':
+        # The user has been registered already or there was
+        # no name given to this user, abort!
+        return json.dumps({'userId': str(user_id)})
+
+    timestamp = old_user.get('timestamp')
+    user = validate_user(user, timestamp)
+
     user['referenceNumber'] = utils.get_reference_number(db)
-    user_id = data['userId']
     db.users.update({'_id': ObjectId(user_id)}, {'$set': user}, upsert=True)
 
     settings = db.config.find_one()
@@ -140,6 +158,35 @@ class JSONEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 
+def validate_user(user, timestamp):
+    validated_user = {
+        'additionalInfo': user.get('additionalInfo', ''),
+        'allergies': user.get('allergies', ''),
+        'avec': user.get('avec', ''),
+        'email': user.get('email', ''),
+        'firstYear': user.get('firstYear', ''),
+        'historyAddress': user.get('historyAddress', ''),
+        'name': user.get('name', ''),
+        'table': user.get('table', ''),
+        'historyOrder': (
+            user.get('historyAddress') if user.get('historyAddress')
+            in ['true', 'false'] else 'false'),
+        'sillis': (
+            user.get('sillis') if user.get('sillis')
+            in ['true', 'false'] else 'false'),
+        'status': (
+            user.get('status') if user.get('status')
+            in ['student', 'notStudent', 'inviteGuest', 'supporter']
+            else 'notStudent'),
+        'historyDeliveryMethod': (
+            user.get('status') if user.get('status')
+            in ['pickup', 'deliverPost']
+            else 'pickup'),
+        'timestamp': timestamp
+    }
+    return validated_user
+
+
 def session_timeout(mongo_db, user_id):
     user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
     if not user.get('name'):
@@ -154,7 +201,11 @@ def get_database():
 # >>> RUN
 # ======================================
 
-settings = utils.load_config(app, get_database(), '/home/fuusio70-ilmo/server/config.ini')
+settings = utils.load_config(
+    app,
+    get_database(),
+    '/home/fuusio70-ilmo/server/config.ini'
+)
 mail = Mail(app)
 
 app.register_blueprint(routes)
