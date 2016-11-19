@@ -227,6 +227,9 @@ function showHistoryOrderAddress(postType) {
 
 function showHistoryOrderDetails() {
     $('.history-order-details').removeClass('hidden');
+    if ($('#historyDeliveryMethod').val() == 'deliverPost') {
+        $('.history-order-address').removeClass('hidden');
+    }
 }
 
 function hideHistoryOrderDetails() {
