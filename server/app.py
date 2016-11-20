@@ -82,14 +82,18 @@ def users_count():
 @cross_origin(origins='*')
 def users_update():
     """ Update user object """
-
-    timestamp = int(time())
-    # Registration opens at
-    # 11/21/2016 @ 10:00am (UTC) [1479722400]
-    if timestamp < 1479722400:
-        return 'Registration has not opened yet'
-
     db = get_database()
+
+    settings = db.config.find_one()
+    debug = int(settings['App']['Debug'])
+
+    if (debug != 1):
+        timestamp = int(time())
+        # Registration opens at
+        # 11/21/2016 @ 10:00am (UTC) [1479722400]
+        if timestamp < 1479722400:
+            return 'Registration has not opened yet'
+
     raw_data = request.data
     print(str(raw_data.decode("utf-8")))
     try:
@@ -115,7 +119,6 @@ def users_update():
     user['referenceNumber'] = utils.get_reference_number(db)
     db.users.update({'_id': ObjectId(user_id)}, {'$set': user}, upsert=True)
 
-    settings = db.config.find_one()
     sent_successfully = utils.send_billing_mail(mail, settings, user)
     db.users.update(
         {'_id': ObjectId(user_id)},
@@ -132,10 +135,14 @@ def users_create():
     db = get_database()
     timestamp = int(time())
 
-    # Registration opens at
-    # 11/21/2016 @ 10:00am (UTC) [1479722400]
-    if timestamp < 1479722400:
-        return 'Registration has not opened yet'
+    settings = db.config.find_one()
+    debug = int(settings['App']['Debug'])
+
+    if (debug != 1):
+        # Registration opens at
+        # 11/21/2016 @ 10:00am (UTC) [1479722400]
+        if timestamp < 1479722400:
+            return json.dumps({'userId': '', 'timestamp': timestamp})
 
     users = db.users
     dummy_user = {
