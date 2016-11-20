@@ -185,9 +185,9 @@ def validate_user(user, timestamp):
             in ['student', 'notStudent', 'inviteGuest', 'supporter']
             else 'notStudent'),
         'historyDeliveryMethod': (
-            user.get('status') if user.get('status')
-            in ['pickup', 'deliverPost']
-            else 'pickup'),
+            user.get('historyDeliveryMethod')
+            if user.get('historyDeliveryMethod')
+            in ['pickup', 'deliverPost'] else 'pickup'),
         'timestamp': timestamp
     }
     return validated_user
