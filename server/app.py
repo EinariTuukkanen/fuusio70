@@ -135,7 +135,7 @@ def users_create():
     # Registration opens at
     # 11/21/2016 @ 10:00am (UTC) [1479722400]
     if timestamp < 1479722400:
-        return json.dumps({'userId': '', 'timestamp': timestamp})
+        return 'Registration has not opened yet'
 
     users = db.users
     dummy_user = {
