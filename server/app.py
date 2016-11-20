@@ -175,7 +175,7 @@ def validate_user(user, timestamp):
         'name': user.get('name', ''),
         'table': user.get('table', ''),
         'historyOrder': (
-            user.get('historyAddress') if user.get('historyAddress')
+            user.get('historyOrder') if user.get('historyOrder')
             in ['true', 'false'] else 'false'),
         'sillis': (
             user.get('sillis') if user.get('sillis')
