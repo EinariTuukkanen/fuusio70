@@ -82,6 +82,13 @@ def users_count():
 @cross_origin(origins='*')
 def users_update():
     """ Update user object """
+
+    timestamp = int(time())
+    # Registration opens at
+    # 11/21/2016 @ 10:00am (UTC) [1479722400]
+    if timestamp < 1479722400:
+        return 'Registration has not opened yet'
+
     db = get_database()
     raw_data = request.data
     print(str(raw_data.decode("utf-8")))
