@@ -124,6 +124,12 @@ def users_create():
     """ Creates new empty user object """
     db = get_database()
     timestamp = int(time())
+
+    # Registration opens at
+    # 11/21/2016 @ 10:00am (UTC) [1479722400]
+    if timestamp < 1479722400:
+        return json.dumps({'userId': '', 'timestamp': timestamp})
+
     users = db.users
     dummy_user = {
         'additionalInfo': '',
