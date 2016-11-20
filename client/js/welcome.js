@@ -11,10 +11,10 @@ function insertUserToTable(index, table, user) {
     var cellTable = row.insertCell(2);
 
     cellIndex.innerHTML = index;
-    cellName.innerHTML = user.name;
-    cellName.className = 'table-mobile-friendly';
-    cellTable.innerHTML = user.table;
-    cellTable.className = 'table-mobile-friendly';
+    cellName.innerHTML = user.name.substring(0, 36);
+    cellName.style.wordBreak = 'break-word';
+    cellTable.innerHTML = user.table.substring(0, 36);
+    cellTable.style.wordBreak = 'break-all';
 }
 
 // On page load get users and insert them to table

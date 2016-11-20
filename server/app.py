@@ -109,7 +109,11 @@ def users_update():
     db.users.update({'_id': ObjectId(user_id)}, {'$set': user}, upsert=True)
 
     settings = db.config.find_one()
-    utils.send_billing_mail(mail, settings, user)
+    sent_successfully = utils.send_billing_mail(mail, settings, user)
+    db.users.update(
+        {'_id': ObjectId(user_id)},
+        {'$set': {'emailSent': sent_successfully}}
+    )
 
     return json.dumps({'userId': str(user_id)})
 

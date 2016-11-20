@@ -84,13 +84,15 @@ def send_billing_mail(flask_mail, settings, user):
         email=user.get('email')
     ))
 
-    send_flask_mail(
+    sent_successfully = send_flask_mail(
         flask_mail,
         email_templates.get('MailHeader'),
         email_templates.get('MailSender'),
         user.get('email'),
         email_body
     )
+
+    return sent_successfully
 
 
 def send_flask_mail(flask_mail, subject, from_email, to_email, body):
@@ -100,7 +102,12 @@ def send_flask_mail(flask_mail, subject, from_email, to_email, body):
         recipients=[to_email]
     )
     msg.body = body
-    flask_mail.send(msg)
+    try:
+        flask_mail.send(msg)
+        return True
+    except Exception as e:
+        print('[ERROR] Failed to send email, ' + str(e))
+        return False
 
 
 def get_reference_number(mongo_db):
