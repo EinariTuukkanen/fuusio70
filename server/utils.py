@@ -43,7 +43,7 @@ def load_config(flask_app, mongo_db, config_filename):
     return settings
 
 
-def send_billing_mail(flask_mail, settings, user):
+def send_billing_mail(flask_mail, settings, user, fixed=''):
     email_templates = settings.get('EmailTemplates')
     billing = settings.get('Billing')
 
@@ -86,7 +86,7 @@ def send_billing_mail(flask_mail, settings, user):
 
     sent_successfully = send_flask_mail(
         flask_mail,
-        email_templates.get('MailHeader'),
+        fixed or email_templates.get('MailHeader'),
         email_templates.get('MailSender'),
         user.get('email'),
         email_body
