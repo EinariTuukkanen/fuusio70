@@ -43,7 +43,7 @@ def load_config(flask_app, mongo_db, config_filename):
     return settings
 
 
-def send_billing_mail(flask_mail, settings, user, fixed=''):
+def send_billing_mail(flask_mail, settings, user):
     email_templates = settings.get('EmailTemplates')
     billing = settings.get('Billing')
 
@@ -86,7 +86,7 @@ def send_billing_mail(flask_mail, settings, user, fixed=''):
 
     sent_successfully = send_flask_mail(
         flask_mail,
-        fixed or email_templates.get('MailHeader'),
+        email_templates.get('MailHeader'),
         email_templates.get('MailSender'),
         user.get('email'),
         email_body
@@ -108,68 +108,6 @@ def send_flask_mail(flask_mail, subject, from_email, to_email, body):
     except Exception as e:
         print('[ERROR] Failed to send email, ' + str(e))
         return False
-
-
-def get_billing_mail(flask_mail, settings, user, fixed=''):
-    email_templates = settings.get('EmailTemplates')
-    billing = settings.get('Billing')
-
-    # Status price
-    if user.get('status') == u'student':
-        sum = int(billing.get('StudentPrice'))
-    elif user == u'supporter':
-        sum = int(billing.get('SupporterPrice'))
-    else:
-        sum = int(billing.get('DefaultPrice'))
-
-    # Sillis price
-    if user.get('sillis') == 'true':
-        sum += int(billing.get('SillisPrice'))
-
-    # History manuscript order price
-    if user.get('historyOrder') == 'true':
-        sum += int(billing.get('HistoryManuscriptPrice'))
-
-    # History manuscript post price
-    if user.get('historyDeliveryMethod') == 'deliverPost':
-        sum += int(billing.get('PostDeliveryPrice'))
-
-    # Pick email template
-    if user.get('status') in ['student', 'notStudent']:
-        letter = Template(email_templates.get('Bill'))
-    else:
-        letter = Template(email_templates.get('ThankYouLetter'))
-
-    # Format template
-    email_templates.update({'sum': sum})
-    email_templates.update(user)
-    email_templates.update({'br': '\n'})
-    email_body = letter.safe_substitute(email_templates)
-
-    print('Sending mail: {name} {email}'.format(
-        name=user.get('name'),
-        email=user.get('email')
-    ))
-
-    flaskmsg = get_flask_message(
-        flask_mail,
-        fixed or email_templates.get('MailHeader'),
-        email_templates.get('MailSender'),
-        user.get('email'),
-        email_body
-    )
-
-    return flaskmsg
-
-
-def get_flask_message(flask_mail, subject, from_email, to_email, body):
-    msg = Message(
-        subject,
-        sender=from_email,
-        recipients=[to_email]
-    )
-    msg.body = body
-    return msg
 
 
 def get_reference_number(mongo_db):
