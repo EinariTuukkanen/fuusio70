@@ -173,6 +173,32 @@ def users_create():
     return json.dumps({'userId': str(user_id), 'timestamp': timestamp})
 
 
+@routes.route('/korjaaViitteet/<secret>', methods=['GET'])
+@cross_origin(origins='*')
+def fix_references(secret):
+    db = get_database()
+    settings = db.config.find_one()
+
+    if secret != settings['App']['Secret']:
+        return 'Invalid'
+    print('Secret correct')
+    users = db.users.find({'referenceNumber': {'$type': 16}})
+    for user in users:
+        ref = utils.checksum(user['referenceNumber'])
+        user['referenceNumber'] = ref
+        db.users.update(
+            {'_id': user['_id']},
+            {'$set': {'referenceNumber': ref}}
+        )
+    print('Updated users')
+    with mail.connect() as conn:
+        for user in users:
+            msg = utils.get_billing_mail(mail, settings, user)
+            print('Sent mail to: ' + user['email'])
+            conn.send(msg)
+    return 'Sent to ' + str(len(users)) + ' users'
+
+
 # ======================================
 # >>> HELPERS
 # ======================================
