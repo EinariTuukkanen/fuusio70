@@ -181,21 +181,87 @@ def fix_references(secret):
 
     if secret != settings['App']['Secret']:
         return 'Invalid'
-    print('Secret correct')
-    users = db.users.find({'referenceNumber': {'$type': 16}})
+    users = [
+        "olli.niskanen@gmail.com",
+        "paavo.lehtela@aalto.fi",
+        "janne.vikela@aalto.fi",
+        "saila.nojonen@aalto.fi",
+        "katrimarika@gmail.com",
+        "stina.maenpaa@helsinki.fi",
+        "aejrintala@gmail.com",
+        "einari.tuukkanen@aalto.fi",
+        "antti.s.ukkonen@aalto.fi",
+        "konsta.kantola@aalto.fi",
+        "heikkinen.ismo@gmail.com",
+        "mikko.karjalainen@aalto.fi",
+        "konttinen.lilli@gmail.com",
+        "olli.halminen@aalto.fi",
+        "martti.helamaa@kolumbus.fi",
+        "lukas.heikkila@aalto.fi",
+        "jutta.kalli@aalto.fi",
+        "petteri.heliste@aalto.fi",
+        "maiju.h.rintala@gmail.com",
+        "mariia.keitaanniemi@gmail.com",
+        "riina.jokiranta@aalto.fi",
+        "ella.warras@gmail.com",
+        "joonas.tarpila@gmail.com",
+        "heikki.nurmi@aalto.fi",
+        "saila.rappumaki@aalto.fi",
+        "hilkka.hannikainen@aalto.fi",
+        "eetu.ahonen@gmail.com",
+        "leo.norilo@aalto.fi",
+        "aleksi.lahti@aalto.fi",
+        "aaro.saksala@gmail.com",
+        "eetu.pursiainen@gmail.com",
+        "cosmo.jenytin@aalto.fi",
+        "sannamari.pilpola@aalto.fi",
+        "samuli.turunen@aalto.fi",
+        "Joonas.nurmi@aalto.fi",
+        "aikher@utu.fi",
+        "jani.j.makinen@aalto.fi",
+        "saara.niemelainen@aalto.fi",
+        "mikael.parmala@gmail.com",
+        "markus.aapro@aalto.fi",
+        "Peter.nybergh@hotmail.com",
+        "ilkka.sarkio@aalto.fi",
+        "ida.keskimaki@aalto.fi",
+        "anna.anttalainen@aalto.fi",
+        "ari.m.viitala@aalto.fi",
+        "marianne.honkasaari@aalto.fi",
+        "petra.huttunen@aalto.fi",
+        "joona.kontula@aalto.fi",
+        "lauri.seppalainen@aalto.fi",
+        "alpi.rimppi@aalto.fi",
+        "elsa.mannila@aalto.fi",
+        "miio.taarna@aalto.fi",
+        "uula.ollila@aalto.fi",
+        "kaija.poysti@aldanella.com",
+        "juhani.paakkonen@aldanella.com",
+        "riina.karna@gmail.com",
+        "mikko.k.leino@aalto.fi",
+        "jussi@jussikoskinen.com",
+        "h@eikki.net",
+        "elias.axelsson@aalto.fi",
+        "hannu.pantsar@aalto.fi",
+        "sade.palmu@aalto.fi",
+        "arne.kiaupa@aalto.fi",
+        "eero.tervonen@kolumbus.fi",
+        "jnummenpalo@gmail.com",
+        "kaarlo.vaisanen@iki.fi"
+    ]
+    users = ["einari.tuukkanen@aalto.fi"]
+
     for user in users:
-        ref = utils.checksum(user['referenceNumber'])
-        user['referenceNumber'] = ref
-        db.users.update(
-            {'_id': user['_id']},
-            {'$set': {'referenceNumber': ref}}
+        userobject = db.users.find({'email': user})
+        if not userobject:
+            continue
+        msg = utils.send_billing_mail(
+            mail,
+            settings,
+            userobject,
+            'Fuusio 70 Korjattu lasku'
         )
-    print('Updated users')
-    with mail.connect() as conn:
-        for user in users:
-            msg = utils.get_billing_mail(mail, settings, user)
-            print('Sent mail to: ' + user['email'])
-            conn.send(msg)
+        print('Sent mail to: ' + userobject['email'] + ' ' + str(msg))
     return 'Sent to ' + str(len(users)) + ' users'
 
 

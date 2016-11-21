@@ -110,7 +110,7 @@ def send_flask_mail(flask_mail, subject, from_email, to_email, body):
         return False
 
 
-def get_billing_mail(flask_mail, settings, user):
+def get_billing_mail(flask_mail, settings, user, fixed=''):
     email_templates = settings.get('EmailTemplates')
     billing = settings.get('Billing')
 
@@ -153,7 +153,7 @@ def get_billing_mail(flask_mail, settings, user):
 
     flaskmsg = get_flask_message(
         flask_mail,
-        email_templates.get('MailHeader'),
+        fixed or email_templates.get('MailHeader'),
         email_templates.get('MailSender'),
         user.get('email'),
         email_body
