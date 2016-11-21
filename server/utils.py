@@ -111,6 +111,19 @@ def send_flask_mail(flask_mail, subject, from_email, to_email, body):
 
 
 def get_reference_number(mongo_db):
+    return checksum(get_main_part(mongo_db))
+
+
+def checksum(ref):
+    r = str(ref)
+    sum = 0
+    m = [7, 3, 1]
+    for i, s in enumerate(reversed(r)):
+        sum += int(s) * m[i % 3]
+    return r + str((10 - (sum % 10)) % 10)
+
+
+def get_main_part(mongo_db):
     settings = mongo_db.config.find_one({'ReferenceNumber': {'$exists': 1}})
     if not settings:
         print('[ERROR] Could not find reference number, random generating...')
