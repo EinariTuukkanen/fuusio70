@@ -145,6 +145,13 @@ def users_create():
             return json.dumps({'userId': '', 'timestamp': timestamp})
 
     users = db.users
+
+    max_users = int(settings['App']['MaxUsers'])
+    if users.count() >= max_users:
+        # TODO: return error
+        print('[WARNING] Max number of users have registered')
+        return json.dumps({'userId': '', 'timestamp': timestamp})
+
     dummy_user = {
         'additionalInfo': '',
         'allergies': '',
