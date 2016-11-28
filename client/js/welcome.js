@@ -30,6 +30,9 @@ $(function() {
                     return a.timestamp - b.timestamp;
                 }
             );
+            if (usersData.length < 250) {
+                $('#registrationButtonContainer').removeClass('hidden');
+            }
             for (var i = 0; i < usersData.length; i++) {
                 insertUserToTable(i + 1, table, usersData[i]);
             }
