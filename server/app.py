@@ -146,11 +146,11 @@ def users_create():
 
     users = db.users
 
-    max_users = int(settings['App']['MaxUsers'])
-    if users.count() >= max_users:
-        # TODO: return error
-        print('[WARNING] Max number of users have registered')
-        return json.dumps({'userId': '', 'timestamp': timestamp})
+    # max_users = int(settings['App']['MaxUsers'])
+    # if users.count() >= max_users:
+    # TODO: return error
+    #    print('[WARNING] Max number of users have registered')
+    #    return json.dumps({'userId': '', 'timestamp': timestamp})
 
     dummy_user = {
         'additionalInfo': '',
@@ -166,6 +166,8 @@ def users_create():
         'sillis': '',
         'status': '',
         'table': '',
+        'greeting': '',
+        'represent': '',
         'timestamp': timestamp
     }
     user_id = users.insert_one(dummy_user).inserted_id
@@ -200,7 +202,11 @@ def validate_user(user, timestamp):
         'firstYear': user.get('firstYear', ''),
         'historyAddress': user.get('historyAddress', ''),
         'name': user.get('name', ''),
+        'represent': user.get('represent', ''),
         'table': user.get('table', ''),
+        'greeting': (
+            user.get('greeting') if user.get('greeting')
+            in ['true', 'false'] else 'false'),
         'historyOrder': (
             user.get('historyOrder') if user.get('historyOrder')
             in ['true', 'false'] else 'false'),
@@ -209,8 +215,8 @@ def validate_user(user, timestamp):
             in ['true', 'false'] else 'false'),
         'status': (
             user.get('status') if user.get('status')
-            in ['student', 'notStudent', 'inviteGuest', 'supporter']
-            else 'notStudent'),
+            in ['inviteGuest']  # 'student', 'notStudent', 'supporter'
+            else 'inviteGuest'),
         'historyDeliveryMethod': (
             user.get('historyDeliveryMethod')
             if user.get('historyDeliveryMethod')
