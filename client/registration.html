@@ -112,9 +112,23 @@
                             <select name="status" class="form-control form-select" required data-validation-required-message="Valitse yksi">
                                 <option value="">-- Valitse --</option>
                                 <option value="inviteGuest">Kutsuvieras</option>
-                                <option value="student" disabled>Opiskelija (85€)</option>
-                                <option value="notStudent" disabled>Ei-opiskelija (110€)</option>
-                                <option value="supporter" disabled>Kannattaja (200€)</option>
+                                <option class="hidden-status hidden" value="student">Opiskelija (90€)</option>
+                                <option class="hidden-status hidden" value="notStudent">Ei-opiskelija (110€)</option>
+                                <option class="hidden-status hidden" value="supporter">Kannattaja (200€)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row control-group form-row form-group controls">
+                        <div class="form-group col-xs-4">
+                            <label>* Killan tai alumnin jäsentyyppi</label>
+                            <p class="help-block text-danger"></p>
+                        </div>
+                        <div class="col-xs-8 controls">
+                            <select name="guildStatus" class="form-control form-select" required data-validation-required-message="Valitse yksi">
+                                <option value="">-- Valitse --</option>
+                                <option value="currentMember">Killan tai alumnin nykyinen jäsen tai tällaisen avec</option>
+                                <option value="exMember">Killan tai alumnin entinen jäsen tai tällaisen avec</option>
+                                <option value="other">Ei mikään edellisistä</option>
                             </select>
                         </div>
                     </div>
@@ -136,7 +150,7 @@
                     </div>
                     <div class="row control-group form-row form-group controls">
                         <div class="col-xs-6">
-                            <label>* Haluan antaa tervehdyksen</label>
+                            <label>* Haluan antaa tervehdyksen coctail-tilaisuudessa</label>
                             <p class="help-block text-danger"></p>
                         </div>
                         <div class="col-xs-3">
@@ -152,8 +166,8 @@
                     </div>
                     <div class="row control-group">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
-                            <label>* Edustamani taho</label>
-                            <input type="text" class="form-control" placeholder="* Edustamasi taho" id="represent" name="represent" required data-validation-required-message="Ole hyvä ja ilmoita edustamasi taho eli kenelle kutsusi on osoitettu">
+                            <label>Edustamani taho</label>
+                            <input type="text" class="form-control" placeholder="Edustamasi taho" id="represent" name="represent">
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
@@ -167,7 +181,7 @@
                     <div class="row control-group">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label>Avec</label>
-                            <input type="text" class="form-control" placeholder="Avecin nimi" id="avec" name="avec">
+                            <input type="text" class="form-control" placeholder="Avecin nimi (Pöytäjärjestystä varten; avecin on ilmoittauduttava erikseen)" id="avec" name="avec">
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
@@ -176,6 +190,20 @@
                             <label>Fuksivuosi</label>
                             <input type="text" class="form-control" placeholder="Fuksivuosi" id="firstYear" name="firstYear">
                             <p class="help-block text-danger"></p>
+                        </div>
+                    </div>
+                    <div class="row control-group form-row form-group controls">
+                        <div class="form-group col-xs-4">
+                            <label>* Juomamenu</label>
+                            <p class="help-block text-danger"></p>
+                        </div>
+                        <div class="col-xs-8 controls">
+                            <select name="drinkMenu" class="form-control form-select" required data-validation-required-message="Valitse yksi">
+                                <option value="">-- Valitse --</option>
+                                <option value="alcoholic">Alkoholillinen</option>
+                                <option value="nonAlcoholic">Alkoholiton</option>
+                                <option value="onlyWines">Pelkät viinit, muuten alkoholiton</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row control-group">

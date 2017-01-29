@@ -3,7 +3,7 @@
 # ======================================
 
 # Python
-import time
+from time import time
 import configparser
 
 # Third-party
@@ -67,8 +67,10 @@ def send_billing_mail(flask_mail, settings, user):
     if user.get('historyDeliveryMethod') == 'deliverPost':
         sum += int(billing.get('PostDeliveryPrice'))
 
-    # Pick email template
-    if user.get('status') in ['student', 'notStudent']:
+    timestamp = int(time())
+    if (timestamp >= 1485770400
+            and user.get('status') in ['student', 'notStudent']
+            and user.get('guildStatus') == 'currentMember'):
         letter = Template(email_templates.get('Bill'))
     else:
         letter = Template(email_templates.get('ThankYouLetter'))
@@ -127,7 +129,7 @@ def get_main_part(mongo_db):
     settings = mongo_db.config.find_one({'ReferenceNumber': {'$exists': 1}})
     if not settings:
         print('[ERROR] Could not find reference number, random generating...')
-        return int(time.time())
+        return int(time())
     reference_number = int(settings.get('ReferenceNumber'))
     mongo_db.config.update(
         {'ReferenceNumber': {'$exists': 1}},

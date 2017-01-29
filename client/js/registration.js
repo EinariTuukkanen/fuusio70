@@ -244,3 +244,7 @@ function hideHistoryOrderDetails() {
 //         $('.history-order-address').addClass('hidden');
 //     }
 // });
+
+if ((new Date()).getTime() >= 1485770400000) {
+    $('.hidden-status').removeClass('hidden');
+}

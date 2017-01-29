@@ -23,6 +23,7 @@ from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
 
 # Project
+# import utils
 from server import utils
 
 # ======================================
@@ -49,7 +50,9 @@ def users_read():
         {
             'name': u.get('name', ''),
             'table': u.get('table', ''),
-            'timestamp': u.get('timestamp')
+            'timestamp': u.get('timestamp'),
+            'preRegistration': u.get('preRegistration'),
+            'guildStatus': u.get('guildStatus', '')
         } for u in users
     ]
     return JSONEncoder().encode(sanitized_users)
@@ -85,14 +88,14 @@ def users_update():
     db = get_database()
 
     settings = db.config.find_one()
-    debug = int(settings['App']['Debug'])
+    # debug = int(settings['App']['Debug'])
 
-    if (debug != 1):
-        timestamp = int(time())
-        # Registration opens at
-        # 11/21/2016 @ 10:00am (UTC) [1479722400]
-        if timestamp < 1479722400:
-            return 'Registration has not opened yet'
+    # if (debug != 1):
+    #     timestamp = int(time())
+    #     # Registration opens at
+    #     # 11/21/2016 @ 10:00am (UTC) [1479722400]
+    #     if timestamp < 1479722400:
+    #         return 'Registration has not opened yet'
 
     raw_data = request.data
     print(str(raw_data.decode("utf-8")))
@@ -136,21 +139,26 @@ def users_create():
     timestamp = int(time())
 
     settings = db.config.find_one()
-    debug = int(settings['App']['Debug'])
+    # debug = int(settings['App']['Debug'])
 
-    if (debug != 1):
-        # Registration opens at
-        # 11/21/2016 @ 10:00am (UTC) [1479722400]
-        if timestamp < 1479722400:
-            return json.dumps({'userId': '', 'timestamp': timestamp})
+    # if (debug != 1):
+    #     # Registration opens at
+    #     # 11/21/2016 @ 10:00am (UTC) [1479722400]
+    #     if timestamp < 1479722400:
+    #         return json.dumps({'userId': '', 'timestamp': timestamp})
 
     users = db.users
+    users_list = list(users.find())
 
-    # max_users = int(settings['App']['MaxUsers'])
-    # if users.count() >= max_users:
-    # TODO: return error
-    #    print('[WARNING] Max number of users have registered')
-    #    return json.dumps({'userId': '', 'timestamp': timestamp})
+    max_users = int(settings['App']['MaxUsers'])
+    priority_users = [
+        u for u in users_list if u.get('preRegistration', False) is True
+        or u.get('guildStatus', '') == 'currentMember'
+    ]
+    if len(priority_users) >= max_users:
+        # TODO: return error
+        print('[WARNING] Max number of users have registered')
+        return json.dumps({'userId': '', 'timestamp': timestamp})
 
     dummy_user = {
         'additionalInfo': '',
@@ -194,6 +202,16 @@ class JSONEncoder(json.JSONEncoder):
 
 
 def validate_user(user, timestamp):
+    # HACK updating roles at 30.1.2017 12pm (gmt+2)
+    timestamp = int(time())
+    valid_statuses = ['inviteGuest']
+    default_status = 'inviteGuest'
+    preregistration = True
+    if timestamp >= 1485770400:
+        valid_statuses += ['student', 'notStudent', 'supporter']
+        default_status = 'notStudent'
+        preregistration = False
+
     validated_user = {
         'additionalInfo': user.get('additionalInfo', ''),
         'allergies': user.get('allergies', ''),
@@ -215,13 +233,22 @@ def validate_user(user, timestamp):
             in ['true', 'false'] else 'false'),
         'status': (
             user.get('status') if user.get('status')
-            in ['inviteGuest']  # 'student', 'notStudent', 'supporter'
-            else 'inviteGuest'),
+            in valid_statuses
+            else default_status),
         'historyDeliveryMethod': (
             user.get('historyDeliveryMethod')
             if user.get('historyDeliveryMethod')
             in ['pickup', 'deliverPost'] else 'pickup'),
-        'timestamp': timestamp
+        'timestamp': timestamp,
+        'guildStatus': (
+            user.get('guildStatus') if user.get('guildStatus')
+            in ['currentMember', 'exMember', 'other']
+            else 'other'),
+        'drinkMenu': (
+            user.get('drinkMenu') if user.get('drinkMenu')
+            in ['alcoholic', 'nonAlcoholic', 'onlyWines']
+            else 'N/A'),
+        'preRegistration': preregistration
     }
     return validated_user
 
@@ -244,8 +271,11 @@ settings = utils.load_config(
     app,
     get_database(),
     '/home/fuusio70-ilmo/server/config.ini'
+    # '/home/einari/Documents/Dev/fuusio70-ilmo/server/config.ini'
 )
 mail = Mail(app)
 
 app.register_blueprint(routes)
 application = app
+
+# application.run()

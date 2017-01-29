@@ -3,6 +3,13 @@
 // ============================
 
 
+var guildStatusRank = {
+    'currentMember': 1,
+    'exMember': 2,
+    'other': 3,
+    '': 3,
+}
+
 // Helper function to insert users in html table
 function insertUserToTable(index, table, user) {
     var row = table.insertRow(-1);
@@ -24,15 +31,44 @@ $(function() {
         url: API_BASE_URL + '/users',
         type: "GET",
         success: function(response) {
-            var usersData = JSON.parse(response);
-            var usersData = usersData.sort(
+            var rawUsersData = JSON.parse(response);
+            var preUsers = rawUsersData.filter(
+                function(u) {
+                    return !!u.preRegistration;
+                }
+            );
+            var preUsers = preUsers.sort(
                 function(a, b) {
                     return a.timestamp - b.timestamp;
                 }
             );
-            // if (usersData.length < 250) {
-            //     $('#registrationButtonContainer').removeClass('hidden');
-            // }
+
+            var regularUsers = rawUsersData.filter(
+                function(u) {
+                    return !u.preRegistration;
+                }
+            );
+            var regularUsers = regularUsers.sort(
+                function(a, b) {
+                    var aRank = guildStatusRank[a.guildStatus];
+                    var bRank = guildStatusRank[b.guildStatus];
+                    if (aRank !== bRank) {
+                        return aRank - bRank;
+                    } else {
+                        return a.timestamp - b.timestamp;
+                    }
+                }
+            );
+            var usersData = preUsers.concat(regularUsers);
+
+            var priorityUsers = usersData.filter(
+                function(u) {
+                    return !!u.preRegistration || u.guildStatus === 'currentMember';
+                }
+            );
+            if (priorityUsers.length < 452) {
+                $('#registrationButtonContainer').removeClass('hidden');
+            }
             for (var i = 0; i < usersData.length; i++) {
                 insertUserToTable(i + 1, table, usersData[i]);
             }
