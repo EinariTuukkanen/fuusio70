@@ -208,7 +208,7 @@ def validate_user(user, timestamp):
     default_status = 'inviteGuest'
     preregistration = True
     if timestamp >= 1485770400:
-        valid_statuses += ['student', 'notStudent', 'supporter']
+        valid_statuses = ['student', 'notStudent', 'supporter']
         default_status = 'notStudent'
         preregistration = False
 
