@@ -176,6 +176,9 @@ def users_create():
         'table': '',
         'greeting': '',
         'represent': '',
+        'drinkMenu': '',
+        'guildStatus': '',
+        'preRegistration': False,
         'timestamp': timestamp
     }
     user_id = users.insert_one(dummy_user).inserted_id
@@ -203,7 +206,6 @@ class JSONEncoder(json.JSONEncoder):
 
 def validate_user(user, timestamp):
     # HACK updating roles at 30.1.2017 12pm (gmt+2)
-    timestamp = int(time())
     valid_statuses = ['inviteGuest']
     default_status = 'inviteGuest'
     preregistration = True
