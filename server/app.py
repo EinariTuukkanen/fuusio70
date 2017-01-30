@@ -88,14 +88,14 @@ def users_update():
     db = get_database()
 
     settings = db.config.find_one()
-    # debug = int(settings['App']['Debug'])
+    debug = int(settings['App']['Debug'])
 
-    # if (debug != 1):
-    #     timestamp = int(time())
-    #     # Registration opens at
-    #     # 11/21/2016 @ 10:00am (UTC) [1479722400]
-    #     if timestamp < 1479722400:
-    #         return 'Registration has not opened yet'
+    if (debug != 1):
+        timestamp = int(time())
+        # Registration opens at
+        # 11/21/2016 @ 10:00am (UTC) [1479722400]
+        if timestamp < 1485770400:
+            return 'Registration has not opened yet'
 
     raw_data = request.data
     print(str(raw_data.decode("utf-8")))
@@ -139,13 +139,13 @@ def users_create():
     timestamp = int(time())
 
     settings = db.config.find_one()
-    # debug = int(settings['App']['Debug'])
+    debug = int(settings['App']['Debug'])
 
-    # if (debug != 1):
-    #     # Registration opens at
-    #     # 11/21/2016 @ 10:00am (UTC) [1479722400]
-    #     if timestamp < 1479722400:
-    #         return json.dumps({'userId': '', 'timestamp': timestamp})
+    if (debug != 1):
+        # Registration opens at
+        # 11/21/2016 @ 10:00am (UTC) [1479722400]
+        if timestamp < 1485770400:
+            return json.dumps({'userId': '', 'timestamp': timestamp})
 
     users = db.users
     users_list = list(users.find())

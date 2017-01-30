@@ -66,7 +66,7 @@ $(function() {
                     return !!u.preRegistration || u.guildStatus === 'currentMember';
                 }
             );
-            if (priorityUsers.length < 452) {
+            if (priorityUsers.length < 452 && (new Date()).getTime() >= 1485770400000) {
                 $('#registrationButtonContainer').removeClass('hidden');
             }
             for (var i = 0; i < usersData.length; i++) {
