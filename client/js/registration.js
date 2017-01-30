@@ -245,7 +245,7 @@ function hideHistoryOrderDetails() {
 //     }
 // });
 
-if ((new Date()).getTime() >= 1485770400000) {
-    $('.hidden-status').removeClass('hidden');
-    $('.invite-status').addClass('hidden');
-}
+// if ((new Date()).getTime() >= 1485770400000) {
+//     $('.hidden-status').removeClass('hidden');
+//     $('.invite-status').addClass('hidden');
+// }
