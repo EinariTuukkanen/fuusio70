@@ -41,19 +41,11 @@ mail = Mail(app)
 # >>> REST API ENDPOINTS
 # ======================================
 
-from datetime import datetime
 
-
-@app.route('/', methods=['GET'])
+@app.route('/home', methods=['GET'])
 @cross_origin(origins='*')
 def homepage():
-    the_time = datetime.now().strftime("%A, %d %b %Y %l:%M %p")
-
-    return """
-    <h1>Hello heroku</h1>
-    <p>It is currently {time}.</p>
-    <img src="http://loremflickr.com/600/400" />
-    """.format(time=the_time)
+    return app.send_static_file('index.html')
 
 
 @app.route('/users', methods=['GET'])
