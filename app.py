@@ -44,7 +44,7 @@ mail = Mail(app)
 from datetime import datetime
 
 
-@app.route('/users', methods=['GET'])
+@app.route('/', methods=['GET'])
 @cross_origin(origins='*')
 def homepage():
     the_time = datetime.now().strftime("%A, %d %b %Y %l:%M %p")
