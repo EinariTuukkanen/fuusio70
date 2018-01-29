@@ -84,13 +84,13 @@ def send_billing_mail(flask_mail, settings, user):
         email=user.get('email')
     ))
 
-    send_flask_mail(
+    """send_flask_mail(
         flask_mail,
         email_templates.get('MailHeader'),
         email_templates.get('MailSender'),
         user.get('email'),
         email_body
-    )
+    )"""
 
 
 def send_flask_mail(flask_mail, subject, from_email, to_email, body):
