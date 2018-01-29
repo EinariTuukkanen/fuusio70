@@ -14,8 +14,7 @@ from bson.objectid import ObjectId
 from time import time
 
 # Third-party
-from flask import Flask
-from flask import request
+from flask import Flask, request, render_template
 from flask_mail import Mail
 from flask_cors import CORS, cross_origin
 
@@ -42,10 +41,16 @@ mail = Mail(app)
 # ======================================
 
 
-@app.route('/home', methods=['GET'])
+@app.route('/', methods=['GET'])
 @cross_origin(origins='*')
 def homepage():
-    return app.send_static_file('index.html')
+    return render_template('index.html')
+
+
+@app.route('/registration', methods=['GET'])
+@cross_origin(origins='*')
+def registration():
+    return render_template('registration.html')
 
 
 @app.route('/users', methods=['GET'])
