@@ -14,9 +14,9 @@ Clone the repository and change to its root directory,
 change your email settings in 'config.ini' and run
 
 ```
+apt-get install pymongo
 pip install -r requirements.txt
-export FLASK_APP=app.py
-flask run
+python app.py
 ```
 
 Then open up `index.html`.
