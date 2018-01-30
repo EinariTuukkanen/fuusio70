@@ -30,7 +30,7 @@ import utils
 client = MongoClient('localhost', 27017)
 db = client.fuusio70
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 CORS(app)
 settings = utils.load_config(app, db, 'config.ini')
 mail = Mail(app)
